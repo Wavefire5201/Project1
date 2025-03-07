@@ -170,18 +170,39 @@ To answer this question, characterize each person using their best *average* sco
 
 Before attempting to answer the question, state what you expect the answer to be below.
 
-**Write your expectation here.**
+**I would think that America has more of a culture of turning games into sports and competitions of the highest levels and provide programs dedicated to developing their sport. Europe has this too, but for historically more established sports. Cubing was invented in the US so I would think that US would have the head start and a more passionate and established base. I think that the US would have better cubers overall as predicted by their personal bests. **
 
 
 
 ```{r}
 ## Add your code here
 
+
+
+library(dplyr)
+
+valid_averages <- ranksaverage %>%select(personId, best) %>%
+  filter(!is.na(best))
+
+person_country <- persons %>%select(id, countryId) %>% inner_join(valid_averages, by = c("id" = "personId"))
+
+person_region <- person_country %>% inner_join(countries, by = c("countryId" = "id"))
+
+filtered_regions <- person_region %>% filter(continentId %in% c("_Europe", "_North America"))
+
+region_comparison <- filtered_regions %>%group_by(continentId) %>% summarise(avg_best_score = mean(best, na.rm = TRUE), avg_sd_score = sd(best,na.rm=TRUE)) %>% arrange(avg_best_score)
+
+
+
+
+
+
 ```
 
 What do you conclude about speedcubers in Europe vs. North America?
 
-**Write you answer here.**
+**North America's personal best time across all cubers on average is 3503.086 seconds whereas in Europe, it is 3537.972 seconds in Europe. However, the standard deviation for Europe's times is greater than North America's. We cannot conclude a significant difference from just a glimpse of this data.**
+
 
 
 ### Alternative Explanations
